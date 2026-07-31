@@ -187,6 +187,7 @@ export function useTelegramMonitor({ config }) {
   const [alerting, setAlerting] = useState(false);
   const [log, setLog] = useState([]);
   const initializedRef = useRef(false);
+  const notifiedKeysRef = useRef(new Set());
   const limitsRef = useRef({ minV: 200, maxV: 240 });
 
   const minV = Number(config?.batas_minimum) || 200;
@@ -221,14 +222,26 @@ export function useTelegramMonitor({ config }) {
         .sort((a, b) => (b.measured_at || 0) - (a.measured_at || 0));
       if (entries.length === 0) return;
 
+      const currentKeys = new Set(entries.map(e => e.key));
+      const notifiedKeys = notifiedKeysRef.current;
+      for (const key of [...notifiedKeys]) {
+        if (!currentKeys.has(key)) notifiedKeys.delete(key);
+      }
+
       if (!initializedRef.current) {
         initializedRef.current = true;
+        entries.forEach(e => notifiedKeys.add(e.key));
         pushLog(`👂 Listener abnormal aktif. ${entries.length} kejadian lama tidak dikirim ulang.`);
         return;
       }
 
+      const newEntries = entries.filter(e => !notifiedKeys.has(e.key));
+      if (newEntries.length === 0) return;
+
+      newEntries.forEach(e => notifiedKeys.add(e.key));
+
       const { minV, maxV } = limitsRef.current;
-      const ev = entries[0];
+      const ev = newEntries[0];
       if (ev.status) setLastStatus(String(ev.status).toUpperCase());
 
       setAlerting(true);
@@ -236,38 +249,40 @@ export function useTelegramMonitor({ config }) {
         try {
           const raw = await fetchData('telegram_users');
           const allUsers = raw ? Object.values(raw) : [];
-          const evStatus = ev.status ? String(ev.status).toUpperCase() : null;
-          const status = evStatus || (ev.voltage != null
-            ? ev.voltage < minV ? 'UNDER VOLTAGE'
-              : ev.voltage > maxV ? 'OVER VOLTAGE'
-              : 'NORMAL'
-            : 'NORMAL');
-          if (status === 'NORMAL') return;
           if (allUsers.length === 0) {
-            pushLog(`⚠️ Kejadian ${status} baru, tapi tidak ada pengguna terdaftar.`, 'warn');
+            pushLog(`⚠️ Kejadian abnormal baru, tapi tidak ada pengguna terdaftar.`, 'warn');
             return;
           }
-          const text = formatAbnormalMessage({
-            status,
-            voltage: ev.voltage != null ? Number(ev.voltage).toFixed(1) : '---',
-            minV,
-            maxV,
-            current: ev.current != null ? Number(ev.current).toFixed(2) : '---',
-            power: ev.power != null ? Number(ev.power).toFixed(0) : '---',
-            time: formatWIB(ev.measured_at || Date.now())
-          });
           let sent = 0;
-          for (const u of allUsers) {
-            const chatId = u.chatid || u.chat_id;
-            if (!chatId) continue;
-            try {
-              await sendTelegramMessage(chatId, text);
-              sent++;
-            } catch (e) {
-              pushLog(`Gagal kirim ke ${chatId}: ${e.message}`, 'err');
+          for (const entry of newEntries) {
+            const evStatus = entry.status ? String(entry.status).toUpperCase() : null;
+            const status = evStatus || (entry.voltage != null
+              ? entry.voltage < minV ? 'UNDER VOLTAGE'
+                : entry.voltage > maxV ? 'OVER VOLTAGE'
+                : 'NORMAL'
+              : 'NORMAL');
+            if (status === 'NORMAL') continue;
+            const text = formatAbnormalMessage({
+              status,
+              voltage: entry.voltage != null ? Number(entry.voltage).toFixed(1) : '---',
+              minV,
+              maxV,
+              current: entry.current != null ? Number(entry.current).toFixed(2) : '---',
+              power: entry.power != null ? Number(entry.power).toFixed(0) : '---',
+              time: formatWIB(entry.measured_at || Date.now())
+            });
+            for (const u of allUsers) {
+              const chatId = u.chatid || u.chat_id;
+              if (!chatId) continue;
+              try {
+                await sendTelegramMessage(chatId, text);
+                sent++;
+              } catch (e) {
+                pushLog(`Gagal kirim ke ${chatId}: ${e.message}`, 'err');
+              }
             }
           }
-          pushLog(`📤 NOTIFIKASI ${status} (${formatWIB(ev.measured_at || Date.now())}) terkirim ke ${sent}/${allUsers.length} pengguna.`);
+          pushLog(`📤 NOTIFIKASI abnormal baru (${newEntries.length} kejadian) terkirim ke ${sent}/${allUsers.length} pengguna.`);
         } catch (e) {
           pushLog(`Gagal kirim notifikasi: ${e.message}`, 'err');
         } finally {
