@@ -2,7 +2,7 @@ import { useRef, useEffect, useMemo } from 'react';
 
 const CONFIG = {
   voltage: { min: 180, max: 260, unit: 'V', decimals: 1, zones: [[0,0.125,'#f59e0b'],[0.125,0.875,'#10b981'],[0.875,1,'#f59e0b']] },
-  current: { min: 0, max: 100, unit: 'A', decimals: 1, zones: [[0,0.05,'#ef4444'],[0.05,0.15,'#f59e0b'],[0.15,0.8,'#10b981'],[0.8,0.92,'#f59e0b'],[0.92,1,'#ef4444']] },
+  current: { min: 0, max: 100, unit: 'A', decimals: 2, zones: [[0,0.05,'#ef4444'],[0.05,0.15,'#f59e0b'],[0.15,0.8,'#10b981'],[0.8,0.92,'#f59e0b'],[0.92,1,'#ef4444']] },
   power: { min: 0, max: 500, unit: 'W', decimals: 0, zones: [[0,0.02,'#ef4444'],[0.02,0.1,'#f59e0b'],[0.1,0.8,'#10b981'],[0.8,0.95,'#f59e0b'],[0.95,1,'#ef4444']] },
   energy: { min: 0, max: 10, unit: 'kWh', decimals: 2, zones: [[0,0.02,'#ef4444'],[0.02,0.1,'#f59e0b'],[0.1,0.85,'#10b981'],[0.85,0.95,'#f59e0b'],[0.95,1,'#ef4444']] },
   frequency: { min: 48, max: 52, unit: 'Hz', decimals: 1, zones: [[0,0.125,'#ef4444'],[0.125,0.25,'#f59e0b'],[0.25,0.75,'#10b981'],[0.75,0.875,'#f59e0b'],[0.875,1,'#ef4444']] },
