@@ -1,0 +1,20 @@
+# Environment variables (berisi Firebase config asli)
+.env
+
+# File konfigurasi lokal
+config.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.env
+node_modules
+dist
+dev-server.log
