@@ -34,7 +34,7 @@ export default function RealtimeChart({ metric, data }) {
   return (
       <div className="chart-canvas-wrapper">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} margin={{ top: 4, right: 4, bottom: 4, left: 0 }}>
+        <LineChart data={chartData} margin={{ top: 4, right: 4, bottom: 4, left: 8 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
           <XAxis
             dataKey="measured_at"
@@ -47,7 +47,7 @@ export default function RealtimeChart({ metric, data }) {
           />
           <YAxis
             tick={{ fontSize: 10, fill: '#94a3b8' }}
-            width={36}
+            width={46}
             domain={['dataMin - auto', 'dataMax + auto']}
           />
           <Tooltip content={<CustomTooltip metric={metric} />} />

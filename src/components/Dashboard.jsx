@@ -169,7 +169,7 @@ export default function Dashboard({ realtimeData, chartPoints, abnormalCount, co
                   <tr>
                     <td>{Number(todaySummary.vMax).toFixed(1)} V</td>
                     <td>{Number(todaySummary.vMin).toFixed(1)} V</td>
-                    <td>{Number(todaySummary.aMax).toFixed(1)} A</td>
+                    <td>{Number(todaySummary.aMax).toFixed(2)} A</td>
                     <td>{Number(todaySummary.pMax).toFixed(0)} W</td>
                   </tr>
                 </tbody>

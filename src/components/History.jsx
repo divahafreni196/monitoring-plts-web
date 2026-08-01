@@ -106,7 +106,7 @@ export default function History({ isAdmin, onDataChanged }) {
       Tanggal: s.date,
       'Tegangan Tertinggi (V)': s.vMax > -Infinity ? Number(s.vMax).toFixed(1) : '',
       'Tegangan Terendah (V)': s.vMin < Infinity ? Number(s.vMin).toFixed(1) : '',
-      'Arus Tertinggi (A)': s.aMax > -Infinity ? Number(s.aMax).toFixed(1) : '',
+      'Arus Tertinggi (A)': s.aMax > -Infinity ? Number(s.aMax).toFixed(2) : '',
       'Daya Tertinggi (W)': s.pMax > -Infinity ? Number(s.pMax).toFixed(0) : ''
     }));
     const wb = XLSX.utils.book_new();
@@ -180,7 +180,7 @@ export default function History({ isAdmin, onDataChanged }) {
                     <td>{s.date}</td>
                     <td data-label="Tegangan Tertinggi">{s.vMax > -Infinity ? Number(s.vMax).toFixed(1) + ' V' : '---'}</td>
                     <td data-label="Tegangan Terendah">{s.vMin < Infinity ? Number(s.vMin).toFixed(1) + ' V' : '---'}</td>
-                    <td data-label="Arus Tertinggi">{s.aMax > -Infinity ? Number(s.aMax).toFixed(1) + ' A' : '---'}</td>
+                    <td data-label="Arus Tertinggi">{s.aMax > -Infinity ? Number(s.aMax).toFixed(2) + ' A' : '---'}</td>
                     <td data-label="Daya Tertinggi">{s.pMax > -Infinity ? Number(s.pMax).toFixed(0) + ' W' : '---'}</td>
                   </tr>
                 ))}
@@ -231,7 +231,7 @@ export default function History({ isAdmin, onDataChanged }) {
                       )}
                       <td>{formatShortDateTime(d.measured_at)}</td>
                       <td data-label="Tegangan">{fmt(d.voltage)} V</td>
-                      <td data-label="Arus">{fmt(d.current)} A</td>
+                      <td data-label="Arus">{fmt(d.current, 2)} A</td>
                       <td data-label="Daya">{fmt(d.power, 0)} W</td>
                       <td data-label="Energi">{d.energy != null ? Number(d.energy).toFixed(3) : '---'} kWh</td>
                       <td data-label="Frekuensi">{fmt(d.frequency)} Hz</td>
