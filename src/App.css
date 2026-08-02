@@ -207,17 +207,6 @@ table { border-collapse: collapse; width: 100%; }
 .status-badge.badge-normal { background: var(--success-light); color: var(--success-dark); }
 .status-badge.badge-high { background: var(--danger-light); color: var(--danger-dark); }
 
-/* Voltage Bar */
-.voltage-bar-container { margin-bottom: 16px; }
-.voltage-bar { display: flex; align-items: center; gap: 8px; }
-.bar-track { flex: 1; height: 12px; background: var(--bg); border-radius: 6px; position: relative; overflow: hidden; display: flex; }
-.bar-range { height: 100%; }
-.bar-range.bar-low { background: var(--warning); border-radius: 6px 0 0 6px; }
-.bar-range.bar-normal { background: var(--success); }
-.bar-range.bar-high { background: var(--danger); border-radius: 0 6px 6px 0; }
-.bar-indicator { position: absolute; top: -4px; width: 4px; height: 20px; background: var(--text-primary); border-radius: 2px; transition: left 250ms ease; z-index: 2; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
-.bar-label { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
-
 /* Summary */
 .summary-section { background: var(--surface); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
 .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
